@@ -39,7 +39,7 @@ class NewPasswordPage extends BasePage
 
         }
         $this->response->setBody($this->useTemplate('templates/new-password.html.php', [
-            'title' => 'Ustaw nowe hasło',
+            'title' => 'Wprowadź nowe hasło',
             'errors' => $errors ?? [],
             'data' => $data ?? []
         ]));
