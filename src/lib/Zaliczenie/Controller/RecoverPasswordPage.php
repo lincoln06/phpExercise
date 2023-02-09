@@ -48,7 +48,7 @@ class RecoverPasswordPage extends BasePage
 
             if (empty($errors)) {
                 $this->sendEmailResetLink($email);
-                $this->response->redirect('/check-email');
+                $this->response->redirect($this->request->getCurrentUri(withQueryString: false) . '?success=true');
 
                 return;
             }
