@@ -25,7 +25,7 @@
     }
 
     a {
-        color: #115599;
+        color: #4F63FA;
         text-decoration: none;
     }
 
