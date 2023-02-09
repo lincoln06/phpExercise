@@ -16,14 +16,14 @@ class Request
         return ($_SERVER[$headerName] ?? null);
     }
 
-    public function getMethod(): string
-    {
-        return strtoupper($_SERVER['REQUEST_METHOD']);
-    }
-
     public function isMethod(string $name): bool
     {
         return ($this->getMethod() === strtoupper($name));
+    }
+
+    public function getMethod(): string
+    {
+        return strtoupper($_SERVER['REQUEST_METHOD']);
     }
 
     public function getValue(string $name, $default = null)
@@ -35,10 +35,12 @@ class Request
     {
         return ($_GET[$name] ?? $default);
     }
-    public function getPageHeaderStringValue(string $pageHeader, $default=null)
+
+    public function getPageHeaderStringValue(string $pageHeader, $default = null)
     {
-        return ($_GET[$pageHeader]??$default);
+        return ($_GET[$pageHeader] ?? $default);
     }
+
     public function getPostValue(string $name, $default = null)
     {
         return ($_POST[$name] ?? $default);

@@ -8,26 +8,20 @@ use Http\Request;
 
 class App
 {
-    public function run():void
+    public function run(): void
     {
-        $request=new Request();
-        $page=$this->getPageForRequest($request);
-        $response=$page->handle();
+        $request = new Request();
+        $page = $this->getPageForRequest($request);
+        $response = $page->handle();
         $response->send();
     }
 
-    private function getPageForRequest(Request $request):BasePage
+    private function getPageForRequest(Request $request): BasePage
     {
         $uri = $request->getCurrentUri(withQueryString: false);
         $page = $this->getPageFromRouting($uri, $request);
 
         return ($page ?? $this->getError404Page($request));
-    }
-    protected function getError404Page(Request $request): Error404Page
-    {
-        $page = $this->getPageFromRouting('_404', $request);
-
-        return (isset($page) ? new $page($request) : new Error404Page($request));
     }
 
     protected function getPageFromRouting(string $route, Request $request): ?BasePage
@@ -48,5 +42,12 @@ class App
         }
 
         return $page;
+    }
+
+    protected function getError404Page(Request $request): Error404Page
+    {
+        $page = $this->getPageFromRouting('_404', $request);
+
+        return (isset($page) ? new $page($request) : new Error404Page($request));
     }
 }

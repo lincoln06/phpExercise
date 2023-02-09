@@ -8,10 +8,10 @@ use Zaliczenie\Controller\RecoverPasswordPage;
 use Zaliczenie\Controller\Viewpage;
 
 return [
-    '/'=>HomePage::class,
-    '/recover-password'=>RecoverPasswordPage::class,
-    '/check-email'=>CheckEmailPage::class,
-    '/new-password'=>NewPasswordPage::class,
-    '/viewpage'=>Viewpage::class,
-    '/error'=>Error404Page::class
+    '/' => HomePage::class,
+    '/recover-password' => RecoverPasswordPage::class,
+    '/check-email' => CheckEmailPage::class,
+    '/new-password' => NewPasswordPage::class,
+    '/viewpage' => Viewpage::class,
+    '/error' => Error404Page::class
 ];

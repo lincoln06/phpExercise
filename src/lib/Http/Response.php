@@ -18,28 +18,33 @@ class Response
     protected string $body = '';
     protected int $statusCode = self::CODE_200_OK;
 
-    public function send():void
+    public function redirect(string $uri, bool $permanent = false, bool $immediate = true): void
+    {
+        $this->setStatusCode(($permanent ? self::CODE_301_MOVED_PERMANENTLY : self::CODE_302_FOUND));
+        $this->setHeader(self::HEADER_LOCATION, $uri);
+        $this->setBody('');
+
+        if ($immediate) {
+            $this->send();
+        }
+    }
+
+    public function setHeader(string $name, string $value): void
+    {
+        $this->headers[$name] = $value;
+    }
+
+    public function send(): void
     {
         http_response_code($this->statusCode);
 
         $this->setHeader(self::HEADER_CONTENT_LENGTH, strlen($this->body));
-        foreach($this->headers as $name=>$value) {
+        foreach ($this->headers as $name => $value) {
             header("{$name}: {$value}");
         }
 
         echo $this->body;
 
-    }
-
-    public function redirect(string $uri, bool $permanent=false, bool $immediate=true):void
-    {
-        $this->setStatusCode(($permanent ? self::CODE_301_MOVED_PERMANENTLY: self::CODE_302_FOUND));
-        $this->setHeader(self::HEADER_LOCATION,$uri);
-        $this->setBody('');
-
-        if($immediate) {
-            $this->send();
-        }
     }
 
     public function setCookie(string $name, string $value, int $lifetime = 0, bool $visibleInCurrentRequest = true): void
@@ -50,11 +55,6 @@ class Response
         if ($visibleInCurrentRequest) {
             $_COOKIE[$name] = $value;
         }
-    }
-
-    public function setHeader(string $name, string $value):void
-    {
-        $this->headers[$name]=$value;
     }
 
     public function deleteHeader(string $name): void

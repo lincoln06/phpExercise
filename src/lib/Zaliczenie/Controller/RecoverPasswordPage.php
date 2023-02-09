@@ -13,26 +13,6 @@ class RecoverPasswordPage extends BasePage
 {
     protected string $email;
 
-    protected function sendEmailResetLink(string $emailAddress): void
-
-    {
-        $hashGenerator = new HashGenerator();
-        $hash = $hashGenerator->generateHash();
-
-        session_start();
-        $_SESSION['hash'] = $hash;
-        $transport = Transport::fromDsn('smtp://apsl-dev@gmx.com:apslDEV2023@mail.gmx.com:587');
-        $mailer = new Mailer($transport);
-        $emailMessage = (new Email())
-            ->from('apsl-dev@gmx.com')
-            ->to(" {$emailAddress}")
-            ->subject('Link do resetowania hasła')
-            ->text("Link do resetowania hasła: localhost/new-password?hash={$hash}");
-
-        $mailer->send($emailMessage);
-    }
-
-
     protected function doHandle(): void
     {
         if ($this->request->isMethod(Request::METHOD_POST)) {
@@ -60,5 +40,24 @@ class RecoverPasswordPage extends BasePage
             'success' => $this->request->getValue('success', false)
         ]));
 
+    }
+
+    protected function sendEmailResetLink(string $emailAddress): void
+
+    {
+        $hashGenerator = new HashGenerator();
+        $hash = $hashGenerator->generateHash();
+
+        session_start();
+        $_SESSION['hash'] = $hash;
+        $transport = Transport::fromDsn('smtp://apsl-dev@gmx.com:apslDEV2023@mail.gmx.com:587');
+        $mailer = new Mailer($transport);
+        $emailMessage = (new Email())
+            ->from('apsl-dev@gmx.com')
+            ->to(" {$emailAddress}")
+            ->subject('Link do resetowania hasła')
+            ->html("Aby zresetować hasło, kliknij w poniższy link:<br><a href='localhost/new-password?hash={$hash}'>[LINK]</a>");
+
+        $mailer->send($emailMessage);
     }
 }

@@ -10,7 +10,7 @@ class NewPasswordPage extends BasePage
 
     protected function doHandle(): void
     {
-        if($this->request->getQueryStringValue('success')===null) {
+        if ($this->request->getQueryStringValue('success') === null) {
             $commonHash = $this->request->getQueryStringValue('hash');
 
             session_start();
