@@ -2,13 +2,15 @@
 <html lang="en">
 <?php require_once('head-template.html.php') ?>
 <body>
+<main>
 <header>
     <h1>Odzyskiwanie hasła</h1>
 
     <?php if ($success): ?>
         <p class="success">Thanks for contacting us, we will respond ASAP.</p>
     <?php endif ?>
-
+</header>
+    <section>
     <form method="post">
         <ul>
             <li>
@@ -28,6 +30,7 @@
             </li>
         </ul>
     </form>
-</header>
+    </section>
+</main>
 </body>
 </html>

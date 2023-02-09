@@ -10,38 +10,39 @@ class NewPasswordPage extends BasePage
 
     protected function doHandle(): void
     {
-        $commonHash = $this->request->getQueryStringValue('hash');
+        if($this->request->getQueryStringValue('success')===null) {
+            $commonHash = $this->request->getQueryStringValue('hash');
 
-        session_start();
-        if ($commonHash !== $_SESSION['hash']) $this->response->redirect('/viewpage?auth=false');
-        if ($this->request->isMethod(Request::METHOD_POST)) {
-            $data = $this->request->getValue('recoverPassword');
-            $newPassword = trim($data['newPassword'] ?? '');
-            $confirmedPassword = trim($data['confirmedPassword'] ?? '');
+            session_start();
+            if ($commonHash !== $_SESSION['hash']) $this->response->redirect('/error');
+            if ($this->request->isMethod(Request::METHOD_POST)) {
+                $data = $this->request->getValue('recoverPassword');
+                $newPassword = trim($data['newPassword'] ?? '');
+                $confirmedPassword = trim($data['confirmedPassword'] ?? '');
 
-            $errors = [];
-            $passRegex = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/";
-            if ($newPassword === '') {
-                $errors['newPassword'] = 'Field required';
-            } elseif (!preg_match($passRegex, $newPassword)) {
-                $errors['newPassword'] = 'Password must be at least 8 characters length and include at least one big letter, at least one small letter one digit and one special character.';
-            }
-            if ($confirmedPassword === '') {
-                $errors['confirmedPassword'] = 'Field required';
-            }
-            if ($confirmedPassword !== $newPassword) {
-                $errors['passwordsNotTheSame'] = 'Passwords must be the same';
-            }
-            if (empty($errors)) {
-                $this->response->redirect('/viewpage?auth=true');
-                return;
-            }
+                $errors = [];
+                $passRegex = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/";
+                if (!preg_match($passRegex, $newPassword)) {
+                    $errors['newPassword'] =
+                        <<<EOERROR
+                    Minimum 8 znaków, jedna wielka litera, jedna cyfra, jeden znak specjalny.
+                    EOERROR;
+                }
+                if ($confirmedPassword !== $newPassword) {
+                    $errors['passwordsNotTheSame'] = 'Wprowadzone hasła muszą być takie same';
+                }
+                if (empty($errors)) {
 
+                    $this->response->redirect($this->request->getCurrentUri(withQueryString: false) . '?success=true');
+                    return;
+                }
+            }
         }
         $this->response->setBody($this->useTemplate('templates/new-password.html.php', [
             'title' => 'Wprowadź nowe hasło',
             'errors' => $errors ?? [],
-            'data' => $data ?? []
+            'data' => $data ?? [],
+            'success' => $this->request->getValue('success', false)
         ]));
     }
 }
