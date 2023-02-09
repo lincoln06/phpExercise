@@ -14,7 +14,7 @@ class NewPasswordPage extends BasePage
             $commonHash = $this->request->getQueryStringValue('hash');
 
             session_start();
-            if ($commonHash !== $_SESSION['hash']) $this->response->redirect('/error');
+            if (!isset($_SESSION['hash']) || $commonHash !== $_SESSION['hash'] ) $this->response->redirect('/error');
             if ($this->request->isMethod(Request::METHOD_POST)) {
                 $data = $this->request->getValue('recoverPassword');
                 $newPassword = trim($data['newPassword'] ?? '');
